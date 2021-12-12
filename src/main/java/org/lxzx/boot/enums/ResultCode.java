@@ -11,6 +11,7 @@ public enum ResultCode {
     SERVER_ERROR(false, 500, "服务器错误"),
 
     BAD_CREDENTIALS(false, 3001, "用户名或密码输入错误！"),
+    HANDLE_FAIL(false, 3000, "操作失败！"),
     PARAMS_NOT_FULL(false, 3002, "参数不全！"),
     AUTHORIZATION_PASS(false, 3003, "登录过期，请重新登录"),
     CREDENTIALS_EXPIRED(false, 3004, "其他错误类型");

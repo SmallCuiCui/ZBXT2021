@@ -2,6 +2,7 @@ package org.lxzx.boot.mapper;
 
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
+import org.lxzx.boot.bean.Schedule;
 import org.lxzx.boot.bean.User;
 
 import java.util.List;
@@ -29,7 +30,15 @@ public interface UserMapper {
     @Select("SELECT * FROM users")
     List<User> getAll();
 
-    @Select("SELECT * FROM users WHERE dept_id = #{deptId}")
+    @Select("<script>" +
+            " SELECT * FROM users WHERE 1 = 1" +
+            " <if test='deptId != null and deptId.trim() != &quot;&quot;'>" +
+            " AND dept_id=#{deptId}" +
+            " </if>" +
+            " <if test='deptId != null and deptId.trim() != &quot;&quot;'>" +
+            " AND dept_id=#{deptId}" +
+            " </if>" +
+            " </script>")
     @ResultMap("userMap")
     List<User> getUsersByDept(String deptId);
 
@@ -44,4 +53,6 @@ public interface UserMapper {
     @Insert("INSERT INTO users (user_id, user_code, user_name, password, phone_num, dept_id, dept_name, position_id, position_name, limited_id, limited_name, status, create_user_id, create_user_code, create_user_name, create_time) values (#{userId}, #{userCode}, #{userName}, #{password}, #{phoneNum}, #{deptId}, #{deptName}, #{positionId}, #{positionName}, #{limitedId}, #{limitedName}, #{status}, #{createUserId}, #{createUserCode}, #{createUserName}, #{createTime})")
     int insertUser(User user);
 
+    @Update("UPDATE users SET status = #{status} WHERE userId = #{userId}")
+    int editUserStatus(String status, String userId);
 }

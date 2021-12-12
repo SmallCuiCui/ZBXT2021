@@ -20,7 +20,10 @@ public class PageResult<T> implements Serializable {
 
     public void setData(PageInfo pageInfo) {
         this.setTotal(pageInfo.getTotal());
-        this.setPage(pageInfo.getPrePage());
+        this.setPage((int)(pageInfo.getTotal() / pageInfo.getPageSize()));
+        if(pageInfo.getTotal() % pageInfo.getPageSize() > 0) {
+            this.setPage(this.getPage() + 1);
+        }
         this.setCurrent(pageInfo.getPageNum());
         this.setSize(pageInfo.getPageSize());
     }

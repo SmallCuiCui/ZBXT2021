@@ -7,10 +7,12 @@ import java.util.List;
 //权限常量
 public enum LimitedEnum implements BaseEnum {
     NORMAL("NORMAL", "普通"),
-    ZHIBAN("ZHIBAN", "值班"),
+    ZHIBAN("ZHIBAN", "值班员"),
     MANAGE("MANAGE", "管理员"),
     LEADER("LEADER", "领导"),
-    SUPER("SUPER", "超级管理员");
+    SUPER("SUPER", "超级管理员"),
+    JIASHIYUAN("JIASHIYUAN", "驾驶员");
+
 
     private final String value;
     private final String name;

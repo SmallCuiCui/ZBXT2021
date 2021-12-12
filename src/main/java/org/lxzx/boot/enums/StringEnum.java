@@ -6,9 +6,13 @@ public enum StringEnum {
     ChaoJiYongHuMingChen(3, "超级管理员"),
     DEFAULTPASSWORD(4, "123456"),
     DRAFT(5, "DRAFT"),
-    DRAFTNAME(5, "草稿"),
-    PUBLISH(5, "PUBLISH"),
-    PUBLISHNAME(5, "提交"),
+    DRAFTNAME(6, "草稿"),
+    PUBLISH(7, "PUBLISH"),
+    PUBLISHNAME(8, "提交"),
+    ONE(9, "ONE"),
+    ONENAME(10, "防疫执勤"),
+    EIGHT(11, "EIGHT"),
+    EIGHTNAME(12, "后台值班"),
     DEFAULT(1000, "空");
 
     private int id;

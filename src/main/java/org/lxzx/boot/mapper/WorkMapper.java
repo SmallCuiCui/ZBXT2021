@@ -37,8 +37,9 @@ public interface WorkMapper {
 //    @Select("SELECT * FROM (SELECT * FROM works WHERE status = 'PUBLISH' ORDER BY dept_id desc) as a GROUP BY a.start_time, a.end_time, a.dept_id")
     @Select("<script>" +
             " SELECT * FROM" +
-            " (SELECT * FROM works WHERE status = 'PUBLISH' " +
-            " <if test='workType != null and workType.trim() != &quot;&quot;'>" +
+            " (SELECT * FROM works WHERE status = 'PUBLISH'" +
+            " <if test='work" +
+            "Type != null and workType.trim() != &quot;&quot;'>" +
             " AND work_type=#{workType}" +
             " </if>" +
             " <if test='startTime != null and workType.trim() != &quot;&quot;'>" +

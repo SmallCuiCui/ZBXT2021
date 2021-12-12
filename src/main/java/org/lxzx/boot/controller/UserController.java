@@ -2,6 +2,7 @@ package org.lxzx.boot.controller;
 
 import org.lxzx.boot.Utils.*;
 import org.lxzx.boot.bean.User;
+import org.lxzx.boot.bean.ZaiWeiRecord;
 import org.lxzx.boot.dto.PageResult;
 import org.lxzx.boot.dto.Result;
 import org.lxzx.boot.enums.ResultCode;
@@ -86,6 +87,30 @@ public class UserController {
         }
     }
 
+    @RequestMapping("/editUserStatus")
+    public Result editUserStatus(@RequestBody ZaiWeiRecord zaiWeiRecord, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        User sessionUser = (User) session.getAttribute("userInfo");
+        if(sessionUser == null) {
+            return  Result.error(ResultCode.AUTHORIZATION_PASS);
+        }
+//        校验数据不能为空
+        if(zaiWeiRecord.getStartTime() == null || zaiWeiRecord.getEndTime() == null || zaiWeiRecord.getTargetUserCode() == null || zaiWeiRecord.getChangeStatus() == null) {
+            return Result.error(ResultCode.PARAMS_NOT_FULL);
+        }
+        int insertNum = userService.editUserStatus(zaiWeiRecord, sessionUser);
+        System.out.println(insertNum);
+        if( insertNum== 0) {
+            return Result.error().message("该用户名已存在！");
+        } else if(insertNum == 1) {
+            return Result.ok().message("添加成功!初始密码为'123456',请尽快登录修改");
+        } else {
+            return Result.error(ResultCode.CREDENTIALS_EXPIRED);
+        }
+    }
+
+
+
     @RequestMapping(value = "/changePassword", method = RequestMethod.POST)
     public Result changePassword(@RequestBody Map<String, Object> params, HttpServletRequest request) {
         HttpSession session = request.getSession();
@@ -145,4 +170,6 @@ public class UserController {
             return Result.ok().message("该单位下用户为空").data(null);
         }
     }
+
+//    查询驾驶员
 }

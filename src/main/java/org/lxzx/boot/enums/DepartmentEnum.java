@@ -6,7 +6,7 @@ import java.util.List;
 
 //部门常量
 public enum DepartmentEnum implements BaseEnum {
-    DEPT1("dept1","单位1"),DEPT2("dept2","单位2"),DEPT3("dept3","单位3"),DEPT4("dept4","单位四");
+    DEPT1("ZHONGXIN","中心办"),DEPT2("dept2","单位2"),DEPT3("dept3","单位3"),DEPT4("dept4","单位四");
 
     private DepartmentEnum(String value, String name){
         this.value = value;

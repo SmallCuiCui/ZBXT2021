@@ -24,6 +24,10 @@ public interface NoticeMapper {
     @Select("SELECT * FROM notices ORDER BY create_time DESC")
     List<Notice> getAll();
 
+    @ResultMap("noticeMap")
+    @Select("SELECT * FROM notices WHERE is_publish=true ORDER BY create_time DESC")
+    List<Notice> getAllPublish();
+
 
     @Insert("INSERT INTO notices (notice_id, notice_title, notice_content, is_publish, whether_screen, publish_time, create_time, create_user_id, create_user_name, read_user_codes) values (#{noticeId}, #{noticeTitle}, #{noticeContent}, #{isPublish}, #{whetherScreen}, #{publishTime}, #{createTime}, #{createUserId}, #{createUserName}, #{readUserCodes})")
     int insertNotice(Notice notice);
@@ -42,4 +46,21 @@ public interface NoticeMapper {
 //    编辑
     @Update("UPDATE notices SET notice_title = #{noticeTitle}, notice_content = #{noticeContent}, whether_screen = #{whetherScreen}, is_publish = #{isPublish}, publish_time = #{publishTime} where notice_id = #{noticeId}")
     int handleEditNoticeById(Notice notice);
+
+//    标记已读
+    @Update("UPDATE notices SET read_user_codes = #{readUserCodes} where notice_id = #{noticeId}")
+    int handleUserRead(String noticeId, String readUserCodes);
+
+//    查询未发布通知
+    @ResultMap("noticeMap")
+    @Select("SELECT * FROM notices WHERE is_publish=false")
+    List<Notice> getAllNoPublish();
+
+    @ResultMap("noticeMap")
+    @Select("SELECT * FROM notices WHERE is_publish=true and whether_screen=true ORDER BY publish_time DESC LIMIT 1")
+    List<Notice> getOneScreen();
+
+//    修改通知状态为已发布
+    @Update("UPDATE notices SET is_publish = true where notice_id = #{noticeId}")
+    int modifyPublish(String noticeId);
 }

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/notice")
@@ -88,12 +90,44 @@ public class NoticeController {
     }
 
     @RequestMapping(value = "/queryAllPublishNotice", method = RequestMethod.GET)
-    public Result queryAllPublishNotice(HttpServletRequest request) {
+    public Result queryAllPublishNotice(@RequestParam(defaultValue = "1", value = "pageNum") int pageNum,
+                                        @RequestParam(defaultValue = "10", value = "pageSize") int pageSize,
+                                        HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        User sessionUser = (User) session.getAttribute("userInfo");
+        if(sessionUser == null) {
+            return  Result.error(ResultCode.HANDLE_FAIL);
+        }
+        PageResult<Notice> pageResult = null;
+        pageResult = noticeService.handlequeryPublish(pageNum, pageSize, sessionUser.getUserCode());
+        return Result.ok().message("查询成功").data("datalist", pageResult);
+    }
+
+    @RequestMapping(value = "/handleUserRead", method = RequestMethod.POST)
+    public Result handleRead(@RequestBody Map<String, String> mapParam, HttpServletRequest request) {
+        String noticeId = mapParam.get("noticeId");
+        String userCode = mapParam.get("userCode");
+        String readUserCodes = mapParam.get("readUserCodes");
+        if(noticeId == null || userCode == null || readUserCodes == null) {
+            return Result.error(ResultCode.HANDLE_FAIL);
+        }
+        int num = noticeService.handleUserRead(noticeId, userCode, readUserCodes);
+        if(num == 1) {
+            return Result.ok().message("标记已读成功");
+        } else {
+            return Result.error(ResultCode.HANDLE_FAIL);
+        }
+    }
+
+    @RequestMapping(value = "/queryScreenNotice", method = RequestMethod.GET)
+    public Result queryScreenNotice(HttpServletRequest request) {
         HttpSession session = request.getSession();
         User sessionUser = (User) session.getAttribute("userInfo");
         if(sessionUser == null) {
             return  Result.error(ResultCode.AUTHORIZATION_PASS);
         }
-        return Result.error(ResultCode.CREDENTIALS_EXPIRED);
+        List<Notice> dataList = noticeService.handleQueryScreen();
+        return Result.ok().message("查询成功").data("datalist", dataList);
     }
+
 }
