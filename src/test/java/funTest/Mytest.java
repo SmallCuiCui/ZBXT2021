@@ -3,6 +3,7 @@ package funTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lxzx.boot.MainAplication;
+import org.lxzx.boot.Utils.Festival;
 import org.lxzx.boot.dto.Result;
 import org.lxzx.boot.bean.Work;
 import org.lxzx.boot.dto.WorkColectBean;
@@ -13,7 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -37,7 +40,6 @@ public class Mytest {
     }
 
 //    测试分组查询，获取工作汇总
-
     @Test
     public void testHandleWork() {
         List<Work> workList = workMapper.getWorkGroupByTime(new Work());
@@ -63,5 +65,21 @@ public class Mytest {
             i++;
         }
         System.out.println(resultList);
+    }
+
+//    测试判断是否为节假日
+    @Test
+    public void judgeHoliday() {
+        Festival festival = new Festival();
+        Map map = festival.getFestival(festival.getDate("2022-01-08"));
+        System.out.println(map);
+    }
+
+    @Test
+    public void judgewoekDay() {
+        Festival festival = new Festival();
+//        Map map = festival.getFestival(festival.getDate("2022-01-29"));
+        boolean tag = festival.isWorkDay(festival.getDate("2022-01-31"));
+        System.out.println(tag);
     }
 }

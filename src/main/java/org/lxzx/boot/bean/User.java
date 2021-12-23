@@ -35,6 +35,8 @@ public class User {
     private String createUserName; // 创建人name
     private Date createTime; //创建时间
 
+    private boolean isDelete; //是否删除
+
     public User(String userCode, String userName, String password, String phoneNum) {
         this.userCode = userCode;
         this.userName = userName;

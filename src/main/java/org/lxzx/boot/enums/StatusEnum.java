@@ -27,4 +27,13 @@ public enum StatusEnum {
     public String getName() {
         return name;
     }
+
+    public static String getNameByValue(String value) {
+        for(StatusEnum e: values()) {
+            if(e.getValue().equals(value)) {
+                return e.name;
+            }
+        }
+        return null;
+    }
 }

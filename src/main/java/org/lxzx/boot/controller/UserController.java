@@ -87,7 +87,7 @@ public class UserController {
         }
     }
 
-    @RequestMapping("/editUserStatus")
+    @RequestMapping(value = "/editUserStatus", method = RequestMethod.POST)
     public Result editUserStatus(@RequestBody ZaiWeiRecord zaiWeiRecord, HttpServletRequest request) {
         HttpSession session = request.getSession();
         User sessionUser = (User) session.getAttribute("userInfo");
@@ -98,15 +98,22 @@ public class UserController {
         if(zaiWeiRecord.getStartTime() == null || zaiWeiRecord.getEndTime() == null || zaiWeiRecord.getTargetUserCode() == null || zaiWeiRecord.getChangeStatus() == null) {
             return Result.error(ResultCode.PARAMS_NOT_FULL);
         }
-        int insertNum = userService.editUserStatus(zaiWeiRecord, sessionUser);
-        System.out.println(insertNum);
-        if( insertNum== 0) {
-            return Result.error().message("该用户名已存在！");
-        } else if(insertNum == 1) {
-            return Result.ok().message("添加成功!初始密码为'123456',请尽快登录修改");
-        } else {
-            return Result.error(ResultCode.CREDENTIALS_EXPIRED);
+        try{
+            int insertNum = userService.editUserStatus(zaiWeiRecord, sessionUser);
+            System.out.println(insertNum);
+            if( insertNum== -1) {
+                return Result.error().message("该时间段存在还未生效的记录，请核实后提交！");
+            } else if(insertNum == -2) {
+                return Result.error().message("数据异常!请联系管理员");
+            } else if(insertNum == 1) {
+                return Result.ok().message("提交成功!");
+            } else {
+                return Result.error(ResultCode.CREDENTIALS_EXPIRED);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return Result.error(ResultCode.CREDENTIALS_EXPIRED);
     }
 
 
@@ -146,11 +153,11 @@ public class UserController {
         }
         PageResult<User> pageResult = new PageResult<>();
         if(sessionUser.getUserCode().equals(StringEnum.ChaoJiYongHu.getInfo())) {
-            pageResult = userService.queryAllUser(pageNum, pageSize);
+            pageResult = userService.queryAllUser(pageNum, pageSize, null);
             return Result.ok().message("查询成功").data("datalist", pageResult);
         } else {
             String deptId = sessionUser.getDeptId();
-            pageResult = userService.queryAllUser(pageNum, pageSize);
+            pageResult = userService.queryAllUser(pageNum, pageSize, deptId);
             return Result.ok().message("查询成功").data("datalist", pageResult);
         }
     }
