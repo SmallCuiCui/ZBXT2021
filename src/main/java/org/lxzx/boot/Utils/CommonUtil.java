@@ -94,4 +94,40 @@ public class CommonUtil {
         return new Timestamp(calendar.getTimeInMillis());
     }
 
+    public static int Days(Date date) {
+        Calendar cal = Calendar.getInstance();
+//      将日期设置给Calendat
+        cal.setTime(date);
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int day = cal.get(Calendar.DATE);
+//      定义累加器储存天数
+        int num = 0;
+//      遍历月份，求每个月份的天数和
+        for (int i = 1; i < month; i++) {
+            switch (i) {
+//          当月为大月时累加31
+                case 1:
+                case 3:
+                case 5:
+                case 7:
+                case 8:
+                case 10:
+                case 12:
+                    num += 31;
+                    break;
+//          当月为二月时闰年累加29，平年累加28
+                case 2:
+                    num += (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) ? 29 : 28;
+                    break;
+                default:
+                    num += 30;
+                    break;
+            }
+        }
+//      加上日
+        num += day;
+        return num;
+    }
+
 }

@@ -4,11 +4,14 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.lxzx.boot.Utils.CommonUtil;
 import org.lxzx.boot.Utils.MD5Util;
+import org.lxzx.boot.bean.Schedule;
 import org.lxzx.boot.bean.ZaiWeiRecord;
 import org.lxzx.boot.dto.DashboardData;
+import org.lxzx.boot.dto.DetailData;
 import org.lxzx.boot.dto.PageResult;
 import org.lxzx.boot.bean.User;
 import org.lxzx.boot.enums.*;
+import org.lxzx.boot.mapper.ScheduleMapper;
 import org.lxzx.boot.mapper.UserMapper;
 import org.lxzx.boot.mapper.ZaiWeiRecordMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,9 @@ public class UserService {
 
     @Autowired
     private DynamicService dynamicService;
+
+    @Autowired
+    private ScheduleMapper scheduleMapper;
 
     public User checkUserLogin(User user) {
         User u = userMapper.login(user.getUserCode(), MD5Util.getMD5(user.getPassword()));
@@ -64,6 +70,10 @@ public class UserService {
             int num = userMapper.insertUser(user);
             return num;
         }
+    }
+
+    public int deleteUserById(String userId) {
+        return userMapper.deleteById(userId);
     }
 
     public int changePassword(String userCode, String originPassword, String newPassword) {
@@ -200,6 +210,44 @@ public class UserService {
         map.put("userList", leaderList);
         dashboardData.addZaiWei((HashMap) map, true);
         return dashboardData;
+    }
+
+    public Map<String, Object> queryUserDetailById(String userCode) {
+        Map<String, Object> map = new HashMap<>();
+//        不在位详细情况
+        List<ZaiWeiRecord> zaiWeiRecords = zaiWeiRecordMapper.getRecordByUserCode(userCode);
+        map.put("zaiWeiList", zaiWeiRecords);
+//        值班详细情况
+        List<Schedule> userSchedules = scheduleMapper.queryZhiBanByUserId(userCode);
+        map.put("scheduleList", userSchedules);
+
+//        查询在位情况（请假、休假、轮休、出差）
+        DetailData detailData = zaiWeiRecordMapper.getZaiWeiCondition(userCode, new Date());
+
+//        计算总的值班天数
+        int zhiBanNum = 0, workZbDay = 0, festivalZbDay = 0;
+        for(Schedule schedule: userSchedules) {
+            zhiBanNum += schedule.getDayNum();
+            if(schedule.isWeekday()) {
+                workZbDay += schedule.getDayNum();
+            } else {
+                festivalZbDay += schedule.getDayNum();
+            }
+        }
+//      计算在位天数
+        int notZaiWeiNum = 0;
+        for (ZaiWeiRecord zaiWeiRecord: zaiWeiRecords) {
+            notZaiWeiNum += zaiWeiRecord.getDayNum();
+        }
+        notZaiWeiNum = CommonUtil.Days(new Date()) - notZaiWeiNum;
+        if(detailData != null) {
+            detailData.setZhiBanNum(zhiBanNum);
+            detailData.setZaiWeiNum(notZaiWeiNum);
+            detailData.setWorkZbDay(workZbDay);
+            detailData.setFestivalZbDay(festivalZbDay);
+        }
+        map.put("detailData", detailData);
+        return map;
     }
 
 }

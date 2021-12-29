@@ -96,4 +96,9 @@ public interface ScheduleMapper {
             " FROM schedule WHERE zhibanyuan_id = #{nowTime}"
     )
     StatisticData getStatistics(String userCode);
+
+//  查询指定人员值班情况
+    @Select("SELECT * FROM schedule WHERE zhibanyuan_id=#{userCode} ORDER BY start_time ASC")
+    @ResultMap("scheduleMap")
+    List<Schedule> queryZhiBanByUserId(String userCode);
 }

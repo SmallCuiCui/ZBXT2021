@@ -4,8 +4,6 @@ import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 import org.lxzx.boot.bean.User;
 import org.lxzx.boot.dto.DashboardData;
-import org.lxzx.boot.enums.StatusEnum;
-import org.lxzx.boot.enums.StringEnum;
 
 import java.util.List;
 
@@ -81,4 +79,7 @@ public interface UserMapper {
     @Select("SELECT * FROM users WHERE is_delete = false AND limited_id = 'LEADER'")
     @ResultMap("userMap")
     List<User> getLeaderZaiWei();
+
+    @Update("UPDATE users SET is_delete = true WHERE user_id = #{userId}")
+    int deleteById(String userId);
 }

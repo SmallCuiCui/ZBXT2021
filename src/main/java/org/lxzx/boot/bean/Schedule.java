@@ -17,7 +17,7 @@ public class Schedule {
     private String zhuGuan;
     private String lingDaoId;
     private String lingDao;
-    private String zhiBanYuanId;
+    private String zhiBanYuanId;//实际存储的id均为userCode
     private String zhiBanYuan;
     private String beiBanYuanId;
     private String beiBanYuan;
@@ -29,7 +29,7 @@ public class Schedule {
     private Date startTime;
     private Date endTime;
     private int dayNum;
-    private boolean isWeekday;
+    private boolean isWeekday;//是否是工作日
     private String scheduleType;
     private Date createTime;
 

@@ -3,6 +3,7 @@ package org.lxzx.boot.mapper;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 import org.lxzx.boot.bean.ZaiWeiRecord;
+import org.lxzx.boot.dto.DetailData;
 
 import java.util.Date;
 import java.util.List;
@@ -39,9 +40,14 @@ public interface ZaiWeiRecordMapper {
     @ResultMap("recordMap")
     List<ZaiWeiRecord> getExecuteRecord(Date nowTime);
 
+//    获取指定人员非在位记录-
     @Select("SELECT * FROM zaiwei_records WHERE target_user_code = #{userCode}")
     @ResultMap("recordMap")
     List<ZaiWeiRecord> getRecordByUserCode(String userCode);
+
+    @Select("SELECT * FROM zaiwei_records WHERE target_user_code = #{userId}")
+    @ResultMap("recordMap")
+    List<ZaiWeiRecord> getRecordByUserId(String userId);
 
 //    更新记录执行状态为已执行
     @Update("UPDATE zaiwei_records SET is_execute = true WHERE zw_record_id = #{zwRecordId}")
@@ -58,4 +64,15 @@ public interface ZaiWeiRecordMapper {
 //    其他状态修改为在位状态；修改结束时间、重新计算天数
     @Update("UPDATE zaiwei_records SET end_time = #{endTime}, day_num = #{dayNum} WHERE zw_record_id = #{zwRecordId}")
     int editRecordTime(Date endTime, int dayNum, String zwRecordId);
+
+//    获取请假、休假、出差
+    @Select("SELECT" +
+            " SUM(day_num) AS zaiWeiNum," +
+            " SUM(CASE WHEN change_status='QINGJIA' THEN 1 ELSE 0 END) AS qingJiaNum," +
+            " SUM(CASE WHEN change_status='XIUJIA' THEN 1 ELSE 0 END) AS xiuJiaNum," +
+            " SUM(CASE WHEN change_status='LUNXIU' THEN 1 ELSE 0 END) AS lunXiuNum," +
+            " SUM(CASE WHEN change_status='CHUCHAI' THEN 1 ELSE 0 END) AS chuChaiNum " +
+            " FROM zaiwei_records WHERE target_user_code = #{userCode} AND end_time <= #{nowDate}"
+    )
+    DetailData getZaiWeiCondition(String userCode, Date nowDate);
 }

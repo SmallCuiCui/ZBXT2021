@@ -77,11 +77,28 @@ public class UserController {
             return Result.error(ResultCode.PARAMS_NOT_FULL);
         }
         int insertNum = userService.addUser(user, sessionUser);
-        System.out.println(insertNum);
         if( insertNum== 0) {
             return Result.error().message("该用户名已存在！");
         } else if(insertNum == 1) {
             return Result.ok().message("添加成功!初始密码为'123456',请尽快登录修改");
+        } else {
+            return Result.error(ResultCode.CREDENTIALS_EXPIRED);
+        }
+    }
+
+    @RequestMapping(value = "/deleteUser" ,method = RequestMethod.GET)
+    public Result deleteUser(@RequestParam(value = "userId") String userId, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        User sessionUser = (User) session.getAttribute("userInfo");
+        if(sessionUser == null) {
+            return  Result.error(ResultCode.AUTHORIZATION_PASS);
+        }
+        if(userId.equals("")) {
+            return Result.error().message("参数不能为空!");
+        }
+        int deleteNum = userService.deleteUserById(userId);
+        if(deleteNum == 1) {
+            return Result.ok().message("删除成功！");
         } else {
             return Result.error(ResultCode.CREDENTIALS_EXPIRED);
         }
@@ -178,5 +195,22 @@ public class UserController {
         }
     }
 
-//    查询驾驶员
+//    查询人员不在位情况、值班情况
+    @RequestMapping(value = "/queryUserDetail", method = RequestMethod.GET)
+    public Result queryUserDetail(@RequestParam(value = "userCode") String userCode, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        User sessionUser = (User) session.getAttribute("userInfo");
+        if(sessionUser == null) {
+            return  Result.error(ResultCode.AUTHORIZATION_PASS);
+        }
+        if(userCode.equals("")) {
+            return Result.error().message("参数不能为空!");
+        }
+
+        Map<String, Object> map = userService.queryUserDetailById(userCode);
+        if(map != null) {
+            return Result.ok().data(map);
+        }
+        return Result.error(ResultCode.CREDENTIALS_EXPIRED);
+    }
 }
