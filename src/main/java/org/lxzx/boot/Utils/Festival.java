@@ -188,7 +188,7 @@ public class Festival {
     }
 
 //    字符串时间获取Date时间
-    public Date getDate(String str) {
+    public static Date getDate(String str) {
         Date dt = null;
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         try {

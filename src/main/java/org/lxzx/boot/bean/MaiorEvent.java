@@ -16,9 +16,8 @@ public class MaiorEvent {
     private String eventId;
     private Date eventDate;
     private String adress;
-    private String related_users;
     private String content;
     private String title;
     private boolean isLock; // 是否锁定
-    private String fileUrl; // 文件路径
+    private String fileURL; // 文件路径
 }
