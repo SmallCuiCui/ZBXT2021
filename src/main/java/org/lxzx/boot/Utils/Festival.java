@@ -202,7 +202,7 @@ public class Festival {
     }
 
 //    Date日期获取字符串时间
-    public String getDate(Date date) {
+    public static String getDate(Date date) {
         String dt = null;
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         dt = df.format(date);

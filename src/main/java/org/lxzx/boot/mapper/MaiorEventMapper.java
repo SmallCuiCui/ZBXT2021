@@ -48,6 +48,6 @@ public interface MaiorEventMapper {
     int lockEventById(String eventId);
 
 //    编辑
-    @Update("UPDATE major_events SET event_date = #{eventDate}, content = #{content}, title = #{title} where event_id = #{eventId}")
+    @Update("UPDATE major_events SET event_date = #{eventDate}, content = #{content}, title = #{title}, fileURL=#{fileURL} where event_id = #{eventId}")
     int handleEditEventById(MaiorEvent event);
 }
